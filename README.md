@@ -1,4 +1,4 @@
-# Calm-X — CALM-S experiment handoff
+# CALM-S — CALM-S experiment handoff
 
 Research code, findings and retained evidence for **CALM-S: Audited Forecast
 Settlement for Budgeted LLM-Agent Orchestration**. Owner: **ap-logics**.
@@ -10,7 +10,7 @@ Handoff date: 24 September 2026. **The full study is not complete.**
 - [Findings index](findings/README.md)
 - [Detailed research plan](AAMAS_EXPERIMENT_PLAN.txt)
 - [Implementation coverage and limitations](CALMS_COVERAGE.md)
-- [Full retained archives](https://github.com/ap-logics/Calm-X/releases/tag/handoff-2026-09-24)
+- [Full retained archives](https://github.com/ap-logics/calm-s/releases/tag/handoff-2026-09-24)
 
 The repository contains runnable source, tests, original manuscript/results,
 and browsable reports/tables/figures. Release assets contain **all retained
@@ -42,13 +42,13 @@ Use Python 3.12 for continuity. No GPU is required. Linux with Docker is needed
 for the prepared coding verifier; AppWorld integration is still unfinished.
 
 ```sh
-git clone https://github.com/ap-logics/Calm-X.git
-cd Calm-X
+git clone https://github.com/ap-logics/calm-s.git
+cd calm-s
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install -e .
 python -m unittest discover -s tests_calms -v
-gh release download handoff-2026-09-24 --repo ap-logics/Calm-X --pattern 'CALM-S-experiments-20260923-extension.zip' --dir downloads
+gh release download handoff-2026-09-24 --repo ap-logics/calm-s --pattern 'CALM-S-experiments-20260923-extension.zip' --dir downloads
 python scripts_handoff/restore_data.py downloads/CALM-S-experiments-20260923-extension.zip
 ```
 
