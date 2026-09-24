@@ -4,6 +4,13 @@ Research code, findings and retained evidence for **CALM-S: Audited Forecast
 Settlement for Budgeted LLM-Agent Orchestration**. Owner: **ap-logics**.
 Handoff date: 24 September 2026. **The full study is not complete.**
 
+**Runtime update:** hosted Linux is now validated with the existing OpenAI API
+account. Both official EvalPlus positive/negative controls pass, and AppWorld
+fresh-instance and evaluator lifecycle checks pass. Coding collection is in
+progress. See [current remote execution instructions](REMOTE_EXECUTION.md).
+The September 23 release remains an immutable earlier snapshot; it does not
+yet contain the new hosted runs. Do not interpret its spend as today's total.
+
 ## Start here
 
 - [Handoff and remaining experiments](HANDOFF.md)
@@ -38,11 +45,12 @@ not observed LLM collusion. [Detailed results](findings/README.md).
 
 ## Set up on another machine
 
-**Windows without virtualization:** use the prepared [GitHub Codespaces setup](REMOTE_EXECUTION.md).
-It provides a persistent remote Linux/Docker workspace; no local WSL is required.
+**Windows without virtualization:** use the [hosted Linux backend](REMOTE_EXECUTION.md).
+The owner's GitHub Codespaces/Actions compute is billing-blocked; the hosted
+backend uses the authorized model API account and shared local spending ledger.
 
-Use Python 3.12 for continuity. No GPU is required. Linux with Docker is needed
-for the prepared coding verifier; AppWorld integration is still unfinished.
+Use Python 3.12 locally for continuity. No local GPU, Docker or virtualization
+is required by the hosted backend. Docker remains an optional alternative.
 
 ```sh
 git clone https://github.com/ap-logics/calm-s.git

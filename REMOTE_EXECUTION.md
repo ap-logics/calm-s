@@ -1,5 +1,51 @@
 # Run from Windows without local virtualization
 
+## Validated hosted route — 24 September 2026
+
+GitHub Codespaces returned an exhausted allowance/budget error. GitHub Actions
+run 36032228785 could not start because the account is billing-locked. Neither
+failure requires changing the repository account: keep `ap-logics/calm-s`.
+
+The OpenAI hosted shell works with the existing authorized OpenAI key. Both
+EvalPlus benchmark families passed canonical-solution and deliberately wrong
+solution controls. AppWorld's official environment opened twice from fresh state,
+executed trusted REPL commands, and ran its evaluator successfully. This is
+runtime validation, not a claim that the AppWorld experiment matrix is complete.
+
+Keys stay in the ignored local `.env`; only code/data are uploaded to containers.
+Paid operations reserve costs transactionally in `calms_runs/api_ledger.sqlite`.
+The current combined API/infrastructure ceiling is $95, leaving a $5 buffer
+under the user's $100 total ceiling. Container fees are conservative estimates;
+provider billing remains authoritative. Do not create a fresh ledger to resume.
+
+```powershell
+python scripts_calms/run_code_benchmarks.py --backend hosted --split dev --live --max-usd 95
+python scripts_calms/analyze_coding.py --stage lock
+python scripts_calms/run_code_benchmarks.py --backend hosted --split test --live --max-usd 95
+python scripts_calms/analyze_coding.py --stage test
+```
+
+For a development run already active, `finish_coding.py --live --env-file .env`
+waits for its completion, freezes development choices, runs held-out collection,
+and analyses it. Start only one continuation process. Every worker response is
+cached; transport repairs reuse the original request namespace and are recorded
+separately. Results are accepted only from the official checker artifact, never
+from the infrastructure model's prose.
+
+Hosted containers default to no outbound network. AppWorld dependencies and its
+official public dataset are uploaded as separate files below the service's 50MB
+limit. Its working tree lives under `/tmp`, while only final artifacts are
+exported from `/mnt/data`, avoiding the 1,000-exported-file limit. Long-running
+commands require explicit completion checks before artifact retrieval.
+
+The AppWorld worker adapter is task-level allocation of complete REPL agents,
+with two independently reset executions per worker and official task-success
+evaluation. It must not be described as step-level DAG auditing. The public
+AppWorld development split is held out from our training subset; it is not the
+benchmark's private official test split.
+
+## Alternative Codespaces route (currently blocked for this account)
+
 The `.devcontainer` configuration creates a persistent Linux/Docker workspace in
 GitHub Codespaces. The Windows PC only controls it; no local Docker or WSL is needed.
 The repository stays private under `ap-logics/calm-s`.
