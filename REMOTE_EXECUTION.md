@@ -2,6 +2,21 @@
 
 ## Validated hosted route — 24 September 2026
 
+Restore the original extension archive first, then the latest hosted-evidence
+increment and its `receipt.json` from Releases. Stop paid execution on the old
+machine before taking over its cumulative ledger:
+
+```powershell
+python scripts_handoff/restore_hosted_increment.py downloads/INCREMENT.zip --receipt downloads/receipt.json --take-over-ledger
+```
+
+This validates every hash and refuses differing existing artifacts. For an
+in-progress snapshot, pending reservations require inspection; do not erase them
+or automatically repeat ambiguous API calls. The final incremental release is
+published automatically after both new analyses finish. Keep the controlling PC
+awake and online while collection is active; model calls and their ledger remain
+local even though benchmark execution is remote.
+
 GitHub Codespaces returned an exhausted allowance/budget error. GitHub Actions
 run 36032228785 could not start because the account is billing-locked. Neither
 failure requires changing the repository account: keep `ap-logics/calm-s`.

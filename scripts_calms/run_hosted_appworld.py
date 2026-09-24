@@ -38,6 +38,12 @@ class TraceClient(Client):
 
 def bundle():
     target=DATA/'agent-runtime.zip'
+    if target.exists():
+        with zipfile.ZipFile(target) as z:
+            for name in ('server','client','setup'):
+                if z.read(name+'.py')!=(ROOT/f'scripts_calms/appworld_hosted_{name}.py').read_bytes():
+                    raise RuntimeError('Frozen AppWorld bundle differs from current service source; retain both versions explicitly')
+        return target
     with zipfile.ZipFile(DATA/'runtime.zip') as original,zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED) as z:
         for name in original.namelist():
             if name!='bootstrap.py': z.writestr(name,original.read(name))
@@ -73,6 +79,7 @@ class Session:
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--live',action='store_true')
     parser.add_argument('--smoke',action='store_true');parser.add_argument('--split',choices=['dev','test'],default='dev')
+    parser.add_argument('--task-id')
     args=parser.parse_args()
     if not args.live: raise SystemExit('No API calls; hosted agent runs require --live')
     runtime_bundle=bundle()
@@ -107,7 +114,8 @@ def main():
     client=TraceClient(ROOT/'calms_runs/api_ledger.sqlite',95,ROOT/'.env',live=True)
     records=[]
     try:
-        for task_id in ids:
+        if args.task_id and args.task_id not in ids: raise ValueError('Task not in frozen split')
+        for task_id in ([args.task_id] if args.task_id else ids):
             target=OUT/args.split/'tasks'/(task_id+'.json')
             if target.exists(): records.append(read_json(target));continue
             taskdir=OUT/args.split/task_id
@@ -153,8 +161,11 @@ def main():
                     'reward':1.0,'reports':reports,'forecast_records':forecast_records,'outcomes':observations,
                     'cost_offers':[8*upper_cost(w,'x'*60000) for w in config['workers']]}
             write_json(target,record);records.append(record)
-        write_jsonl(OUT/args.split/'matrix.jsonl',records)
-        write_json(OUT/args.split/'complete.json',{'tasks':len(records),'cumulative_spend':client.total()})
+        available=[OUT/args.split/'tasks'/(t+'.json') for t in ids]
+        if all(p.exists() for p in available):
+            records=[read_json(p) for p in available]
+            write_jsonl(OUT/args.split/'matrix.jsonl',records)
+            write_json(OUT/args.split/'complete.json',{'tasks':len(records),'cumulative_spend':client.total()})
     finally: client.close()
 
 if __name__=='__main__': main()
