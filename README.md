@@ -38,6 +38,9 @@ not observed LLM collusion. [Detailed results](findings/README.md).
 
 ## Set up on another machine
 
+**Windows without virtualization:** use the prepared [GitHub Codespaces setup](REMOTE_EXECUTION.md).
+It provides a persistent remote Linux/Docker workspace; no local WSL is required.
+
 Use Python 3.12 for continuity. No GPU is required. Linux with Docker is needed
 for the prepared coding verifier; AppWorld integration is still unfinished.
 
