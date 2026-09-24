@@ -1,0 +1,24 @@
+{
+  "paper": "CALM-S",
+  "date": "2026-09-24",
+  "api_ledger": [
+    [
+      "done",
+      3908,
+      16.0291502
+    ]
+  ],
+  "cumulative_cap_usd": 99,
+  "full_study_complete": false,
+  "code_verifier_runtime_validated": false,
+  "remaining": [
+    "EvalPlus execution and analysis",
+    "AppWorld implementation and execution",
+    "faithful external baselines",
+    "live shift streams",
+    "two-window strategic attacks",
+    "confirmatory statistical design"
+  ],
+  "raw_http_envelopes_for_historical_calls": false,
+  "historical_calls_have_hash_verified_requests_and_parsed_responses": true
+}

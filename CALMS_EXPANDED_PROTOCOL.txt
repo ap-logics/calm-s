@@ -1,0 +1,59 @@
+CALM-S EXPANDED STUDY -- 23 SEPTEMBER 2026
+
+Authorization: user permits reasonable experiment spending below US$100.
+Execution ceiling: US$99 cumulative in the existing ledger, including the
+US$2.6840378 first pilot. No change to API keys or the unrelated aamas folder.
+
+Why this run:
+The first development data showed overly optimistic cheap-worker forecasts,
+and routing subtracted worst-case cost reserves from expected reward. The new
+run distinguishes expected cost for utility from conservative affordability
+reserves. The original objective remains an explicit offline ablation.
+Capability cards contain aggregate DEVELOPMENT performance only.
+
+New data:
+60 whole-question QA development tasks, 150 fresh test tasks, each with four
+workers x two decodes plus three pre-outcome forecasters.
+12 further development projects yield 36 node calibration tasks.
+24 separate decomposition-derived projects run on-policy under static,
+exploration, equal-pool, selected-only, and CALM-S policies. Agents receive
+actual upstream outputs. All component question IDs are disjoint across new
+groups and both groups of the earlier pilot.
+
+Models: GPT-4.1 mini, Claude Haiku 4.5, GPT-4.1, Claude Sonnet 5 workers;
+the first three also act in separate forecasting contexts.
+
+QA protocol:
+Ten disjoint streams of 15 test tasks; pool reset between streams.
+Primary budget US$0.20; US$0.10 and US$0.40 sensitivity.
+Audit rates 0, 0.5%, 1%, 2%, 5%, 10%; select positive rate on new development
+data only. Choose strongest baseline on development, always show equal pooling.
+Reward US$0.25 equivalent; report predeclared US$0.05, 0.10, 0.25, 0.50, 1.00
+sensitivity rather than changing conversion to obtain a favorable result.
+Inference uses paired disjoint stream means, not cached-repeat pseudo-seeds.
+
+Workflow protocol:
+Three disjoint streams of eight projects; five policies; budget US$0.60 per
+project, audit rate 2%. Fail fast at an incorrect node. Historical static and
+cost priors fitted from development nodes with known upstream answers.
+Descriptive evidence only at three streams. This is not AppWorld.
+
+Additional offline diagnostics fixed during development collection, BEFORE
+new test collection or outcome inspection:
+- Cheap hop-conditioned historical predictor fitted on development only.
+- Full-candidate forecast Brier against cheap historical predictors.
+- Count-matched feedback: same fixed equal-pool selector and same audit trigger
+  across arms, reveal one random-worker or one selected-worker outcome per
+  triggered task. Update only afterward. Compare next-task full-candidate Brier;
+  this isolates a label-selection diagnostic, not a deployment utility claim.
+  Reuse the dev-selected audit rate and also show 10% as a fixed sensitivity.
+- Report costs, audit counts, abstentions, incomplete responses, and hop strata.
+
+This is a prospective extension after an inspected pilot, not external
+preregistration. MuSiQue public-data contamination and exact-match limitations
+remain. No actual economic transfers. Coding/EvalPlus, AppWorld, faithful
+Agora/AgentLance reproductions, and stronger contextual online learners remain
+outside this run. Keep all unfavorable results.
+
+Machine-readable IDs, source hashes, dataset hashes, and protocol:
+calms_data/expanded-20260923/protocol.json

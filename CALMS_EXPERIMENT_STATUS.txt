@@ -1,0 +1,98 @@
+CALM-S EXPERIMENT STATUS -- 23 SEPTEMBER 2026
+
+LATEST EXTENSION (same date)
+31 exploratory real-matrix routing arms, 24,000 audit-noise simulations and
+120 coalition-affine attack settings completed without new API calls.
+44 tests pass. See calms_runs/remaining-replays-20260923/RESULTS.txt.
+Official expanded coding datasets, splits and Docker runner are now prepared;
+the runner has NOT been runtime validated. Firmware virtualization is disabled;
+WSL2 installation failed. User will enable it and restart later.
+The full study is still incomplete. Resume instructions and outstanding
+implementation work are recorded in CALMS_RESUME_AFTER_RESTART.txt.
+
+COMPLETED AND PAID
+Total API usage-priced cost: US$16.0291502, including the initial pilot.
+Expanded study alone: US$13.3451124.
+Execution limit: US$99 cumulative, under the user's US$100 ceiling.
+All 3,908 ledger calls completed; zero pending/uncertain calls.
+Expanded live collection took 1,292.5 seconds (about 21.5 minutes).
+These are token-ledger estimates; provider invoices are authoritative.
+
+Initial pilot: 30 dev + 30 test QA tasks, 660 calls, plus 14 fixture calls.
+Expanded whole-question QA: 60 fresh dev + 150 fresh test tasks, 2,310 calls.
+Workflow calibration: 36 development nodes from 12 projects, 396 calls.
+Live workflow evaluation: 24 fresh projects x 5 policies, 528 actual calls;
+failed nodes stop a project, so this is below an all-nodes-success call count.
+Separate offline study: 230,400 synthetic episode records.
+
+WHAT THE EXPANDED STUDY FOUND
+At the locked US$0.20 episode budget and development-selected 0.5% audit rate:
+
+                    QA success       Mean cost        Mean net value
+CALM-S                 66.0%          $0.0209533         $0.1440467
+Equal pooling          66.0%          $0.0208891         $0.1441109
+Premium/static         66.0%          $0.0099049         $0.1550951
+
+Net value uses a declared $0.25 equivalent reward per correct answer.
+The premium worker is Claude Sonnet 5. It was the development-selected baseline.
+CALM-S's paired net-value difference from premium was -$0.0110484 per task;
+95% stream-bootstrap interval [-$0.0113179, -$0.0107983], over ten disjoint
+15-task streams. This is evidence against a utility advantage in this setting.
+Most of the loss is forecasting cost ($0.0109842/task); audit cost at the selected
+rate adds $0.0000642/task. Only two audits occurred at this low selected rate.
+At the same primary budget, all six tested audit rates had 66% QA success.
+
+Workflow completion: CALM-S 7/24; static 9/24; equal 8/24; selected 7/24;
+exploration 5/24. These are descriptive results from three streams, not a
+confirmatory significance result. Actual upstream worker outputs were used.
+
+Full-candidate Brier: historical predictor 0.246108; equal LLM pool 0.246976.
+The count-matched feedback diagnostic revealed 96 labels in each arm at the
+fixed 10% rate: random-candidate Brier 0.246289, selected-candidate 0.246551.
+That small descriptive difference does not establish an adaptive utility gain.
+
+Collection had zero invalid forecasts and six incomplete worker outputs; those
+incomplete outputs remain failures in the denominators and costs. Workflow
+execution had zero invalid forecasts and zero incomplete worker outputs.
+Zero shared-budget violations were found in the evaluated runs.
+
+WHAT THIS MEANS FOR THE PAPER
+- Do not claim broad practical performance gains or that audits pay for themselves
+  in stationary QA. Preserve the negative comparison with equal pooling and the
+  strong static worker; beating the cheapest worker is not the audit contribution.
+- The mechanism/incentive argument and practical routing benefit remain separate.
+  No financial score transfers were implemented in the live runs.
+- Do not call this a complete AAMAS study or an externally registered experiment.
+  The extension was prospectively fixed after inspecting the first pilot.
+- Do not treat the change from first-pilot accuracy to expanded-study accuracy as
+  a causal treatment effect: the tasks, hop mix, context formatting and cards differ.
+- Report the strong effect of pessimistic audit reserves at the tight budget.
+  Rare audits still require reserving the maximum possible audit expense.
+- Replace unsupported manuscript claims about a supplied complete preregistration
+  or historical simulator reproduction with the actual artifacts and limitations.
+
+HIGH-VALUE REMAINING WORK
+1. Demonstrate useful conditional worker complementarity on another real task
+   family, rather than adding more stationary questions dominated by one worker.
+2. Add a stronger cheap contextual online learner and genuinely matched feedback
+   and spending comparisons. The existing count control is a diagnostic only.
+3. Run independent real-model manipulation/drift streams under a frozen protocol
+   if retaining an adaptation/insurance claim. Do not relabel synthetic drift as real.
+4. Set up Docker before executing generated code for EvalPlus. Docker is absent
+   on this host; generated code has not been executed on the host Python process.
+5. Implement genuine AppWorld lifecycle/snapshots and a faithful applicable
+   external baseline before making those coverage claims.
+
+ARTIFACTS
+Detailed expanded report: calms_runs/expanded-20260923/EXPANDED_RESULTS.md
+Figures (PNG/PDF): calms_runs/expanded-20260923/figures/
+Exact hash-verified requests and stored responses: calms_runs/retained-traces/
+Frozen protocol and all selected data: calms_data/expanded-20260923/
+Original raw dataset: calms_data/raw/musique_v1.0.zip
+Source snapshots: calms_runs/source-snapshots/ and original CALM-S-code.zip
+Full archive: CALM-S-experiments-20260923.zip
+Archive receipt/hash: CALMS_ARCHIVE_RECEIPT.json
+
+All recorded experiment data remain in place. The archive supplements the
+originals. Authentication secrets are excluded. Request bodies are reconstructed
+and verified against ledger hashes; earlier raw HTTP envelopes were not recorded.

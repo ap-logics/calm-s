@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+calms_data/
+calms_runs/
+downloads/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.zip
+.calms_plot_dependencies/
+.calms-linux/

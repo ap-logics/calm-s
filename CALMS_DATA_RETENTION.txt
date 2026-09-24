@@ -1,0 +1,41 @@
+CALM-S EXPERIMENT DATA RETENTION
+
+User instruction, 23 September 2026: keep all experiment data and traces.
+
+Retain the original calms_data/ and calms_runs/ directories. Do not delete raw
+outputs after producing a summary or ZIP. Keep unsuccessful and incomplete
+responses in the logs and denominators. Do not replace unfavorable results.
+Preserve old run manifests and code snapshots when changing implementations.
+
+Retained material:
+- Original downloaded MuSiQue archive and its hash/source/licence.
+- Every selected source record, normalized task, split, component-disjointness
+  protocol, development fit, model card, and configuration.
+- Worker model text, forecast text/probabilities, exact verifier outcomes,
+  response IDs, reported model IDs, token counts, cache counts, measured latency,
+  costs, and incomplete-call flags.
+- Task-by-task collection shards, committed pre-outcome forecasts, workflow
+  decisions, actual upstream outputs, audit draws/propensities, pooling weights,
+  reservations, and final outcomes.
+- SQLite billing ledger via a consistent backup, including any pending records.
+- Offline episode logs, analyses, diagnostics, negative findings, and summaries.
+- Source snapshots, original paper/results, the earlier code ZIP, and an archive
+  manifest containing per-file SHA-256 hashes.
+
+Trace export:
+scripts_calms/preserve_experiments.py reconstructs each exact request body from
+the immutable manifests and saved inputs/history, then verifies its request hash
+against the billing ledger. It retains the original parsed response record and
+model text. Earlier calls did not record raw HTTP envelopes/headers; the export
+does not claim to recover those. Authentication headers and API keys are never
+included. Different observed states of a pending call are retained separately.
+
+Final local archive:
+CALM-S-experiments-20260923.zip
+Receipt/hash: CALMS_ARCHIVE_RECEIPT.json
+The archive is created after completion and a scan against the actual local
+credential values. It includes all CALM-S data and run artifacts, excluding
+credentials, transient Python caches, and the unrelated aamas repository.
+The archive supplements the originals; it does not replace or delete them.
+
+This is local preservation, not an off-device backup or public release.

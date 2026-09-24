@@ -1,0 +1,76 @@
+CALM-S EXPLORATORY EXTENSIONS -- 23 SEPTEMBER 2026
+
+Scope: retained real-model QA matrices, not new model executions. These analyses
+were added after the primary test results were seen. They are exploratory.
+Data: 60 development and 150 test tasks, two retained worker decodes each.
+Routing statistics: ten disjoint 15-task streams; reset online state per stream.
+No new API calls; cumulative spending remains $16.0291502.
+
+E2: CHEAP CONTEXTUAL ONLINE ROUTER
+Beta-Bernoulli worker estimates are conditioned on question hop count. The
+development prior counts each task once using its mean over two decodes.
+Epsilon is selected from 0, .05, .1, .2, .4 by leave-one-stream-out development
+evaluation; .05 wins. During test, only earlier production and triggered audit
+labels update the router. Full-candidate outcomes are evaluator-only.
+This is a stronger contextual baseline than the old unconditioned exploration
+arm, but is not a state-of-the-art router reproduction.
+
+With no extra audits: success 65.333%, cost $0.009624468/task, net $0.153708865.
+At audit rate .005: same success, cost $0.009688668, net $0.153644665.
+At .02 and .1, success remains unchanged while audit costs increase.
+The primary premium/static comparator previously achieved 66% and net
+$0.155095067. These results do not establish a benefit from auditing here.
+
+E6: MATCHED AUDITS AND POOLING
+The pooling ablations use the SAME nonuniform audit law [1,2,4,8], randomness,
+audit labels and costs. Rates: .005, .02, .1; budget $.20; reward $.25.
+Arms: equal, exponential, generalized Bayesian, online convex stacking,
+unweighted updates, three-step-delayed updates, and each single forecaster.
+Unlike the old no-audit equal arm, equal-same-audits pays identical audit costs.
+The contextual router uses uniform audits and is not a spending-matched control
+for these nonuniform pooling arms.
+
+At .005, all pooling and single-forecaster arms attain 66% success.
+Equal-same-audits and exponential both cost $0.020946171, net $0.144053829.
+The single mini forecaster costs $0.011192091, net $0.153807909, at the same
+success rate. In this frozen-forecast setting, extra forecasters add overhead
+without an observed routing gain. This does not test adaptive semantic reports.
+All 31 routing arms have zero total-budget violations.
+Complete results: routing-summary.csv and routing-traces.jsonl.
+
+E7: PROPENSITY ESTIMATION ON REAL MATRICES
+Target: average quadratic score across all four candidates and all 150 tasks,
+conditional on retained reports and on the mean of the two observed decodes.
+We vary uniform/nonuniform auditing, three rates, and unclipped/10/50/100 weights.
+Each setting has 1,000 audit-only Monte Carlo draws; exact conditional moments
+are computed independently. No new outcome draws or model calls are simulated.
+
+Unclipped inverse-propensity estimates have exact zero conditional bias.
+But low audit rates produce substantial variance: for forecaster 0, nonuniform
+audits, rate .005, exact RMSE is .540506, mean effective sample size only 2.677,
+and maximum inverse probability 903.127. At clip 100, bias is -.361832 and
+RMSE .419722. Clipping changes the estimand in expectation; it is not free.
+The score average is normalized to [0,1], although unbiased sparse estimates
+can exceed 1. Quantiles are normalized score estimates, NOT dollars paid.
+Forecaster-rank recovery is descriptive; Monte Carlo trials are not new tasks.
+These results concern estimator noise, not causal policy-value improvement.
+Complete results: propensity-summary.csv and propensity-monte-carlo.jsonl.
+
+E3: COALITION AFFINE REPORT ATTACKS (SEPARATE DIRECTORY)
+calms_runs/coalition-attacks-20260923 contains 120 fitted settings and 18,000
+held-out task comparisons. One- and two-worker-owner coalitions (25%/50%) fit
+45 shared affine transforms on development tasks. Side interests: 0,.25,1,4.
+Mechanisms: stylized coupled winner, coupled audit and separated audit.
+Identity reports provide the zero-manipulation comparison in every setting.
+Scores use expected audit exposure; no cash transfers occurred. Gains relative
+to elicited reports may reflect calibration corrections. This experiment does
+not establish private truthfulness, live LLM collusion or two-window equilibrium.
+
+VALIDATION
+44 harness tests passed, including current/future-label causal isolation,
+one-task weighting of repeated development decodes, and identical audit exposure
+for equal versus adaptive pooling. Exact unclipped-bias assertions passed.
+Every Monte Carlo audit selection and fitted transformation has been retained.
+
+The full requested study remains incomplete. See CALMS_RESUME_AFTER_RESTART.txt
+for the virtualization blocker, prepared coding stage, and remaining work.

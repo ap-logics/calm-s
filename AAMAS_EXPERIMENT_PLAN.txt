@@ -1,0 +1,606 @@
+CALM-S: EXPERIMENTS TO PRIORITIZE FOR AAMAS 2027
+Prepared 17 September 2026
+
+Purpose: a concrete setup brief, ordered by likely scientific value for review.
+This is a proposed study plan, not a completed preregistration or a guarantee
+of acceptance. Sample counts below are planning targets unless stated otherwise.
+
+Read: paper/main.tex, paper/references.bib, results/summary.csv,
+results/strategic_results.csv, and the structure/budget fields of
+results/episode_results.csv. Checked the official AAMAS 2027 main-track call
+and primary repositories for the proposed benchmarks. No experiments were run.
+
+1. THE DECISION THAT SHOULD DRIVE THE EXPERIMENTS
+================================================
+
+The paper needs to establish the value of audited forecast settlement, beyond
+the value of having good independent forecasts. The existing simulation does
+not yet establish this:
+
+  Independent equal pool:          14.4268 mean net value
+  Selected-only weighted pool:     14.4046
+  CALM-S with two audits/episode:  14.1825
+  Static router:                   12.8507
+
+CALM-S trails equal pooling by 0.2444 value units, approximately 1.69% of the
+equal-pool value. Its mean audit cost is 0.1970. These are descriptive differences;
+the supplied marginal confidence intervals are not paired-difference tests.
+Beating the static router therefore cannot establish the audit contribution.
+
+My priority is to answer four questions convincingly:
+  A. Can realistic independent forecasts improve real-agent allocation?
+  B. When does unbiased audit feedback improve decisions enough to pay for itself?
+  C. Does the settlement design remove profitable report manipulation under its
+     stated assumptions, and where do those assumptions break?
+  D. Does this work on workflows with actual dependencies and a shared budget?
+
+Run the core experiments below before adding many benchmark families. A clear
+mechanism result, a credible cost frontier, and real workflow evidence are more
+valuable here than a large table of weak comparisons. Keep unfavorable results.
+
+Recommended minimum: E0 through E5, plus the core ablations in E6.
+E7 is an inexpensive robustness extension if time permits.
+
+2. E0 -- REPRODUCIBILITY AND BUDGET RECONCILIATION [FIRST; NO API COST]
+====================================================================
+
+Problem addressed: the current empirical claims cannot be regenerated from this
+folder, and the budget interpretation is unclear.
+
+Tasks:
+  [ ] Recover the exact simulator and strategic-experiment scripts that generated
+      these CSVs. The provided folder contains paper files and results, but no
+      simulator, environment lockfile, or preregistration supplement.
+  [ ] Regenerate the 30 seeds x 80 episodes x 10 policies. Recompute the published
+      means, seed-level intervals, figures, and strategic results from raw logs.
+  [ ] Reconcile execution versus total budget. In the supplied logs, execution
+      cost plus audit cost exceeds 2.20 in 461/2,400 CALM-S episodes; the maximum
+      is approximately 2.61. This is not necessarily a violation of the written
+      execution-only constraint, but it is not a common total-budget comparison.
+  [ ] Rerun with execution, audits, forecasting, verification, and settlement
+      spending inside the same declared principal budget. If the historical
+      simulation has no forecast/settlement charges, state this explicitly.
+  [ ] Report both execution-only and shared-total-budget interpretations if both
+      are scientifically relevant. Do not silently replace the old results.
+  [ ] Check whether shadow outcomes represent the same task state and worker
+      behavior as production outcomes. Independence of audit sampling from
+      reports alone does not ensure that the observed outcomes are comparable.
+  [ ] Define the unit being audited: a task-worker-state candidate, not an entire
+      allocation in one equation and a worker-task pair in another.
+  [ ] Verify propensity calculations, update timestamps, budget feasibility,
+      non-leakage of unobserved labels, and absence of report-dependent audits.
+  [ ] Document why reported pseudo-regret differs from realized oracle minus
+      realized policy value: expected-objective regret and realized gaps are
+      different quantities and should be separately named.
+
+Deliverable: regeneration command, environment file, configuration files, and
+an accounting table with reward, execution cost, audit cost, other overhead,
+net value, total spend, and budget violations for every policy.
+
+Completion criterion: all headline numbers regenerate or discrepancies are
+explained; shared-budget runs have zero violations under the declared rule.
+
+3. SHARED HARNESS -- BUILD ONCE FOR ALL EXPERIMENTS
+=================================================
+
+Workers and forecasts:
+  - Start with four version-pinned workers: one low-cost generalist, one
+    intermediate generalist, one stronger generalist, and one specialist or
+    different-family worker. Choose exact IDs based on access and pilot evidence
+    of complementary ability, not a favorable final-test result.
+  - Use three separately configured forecasters, with at least two model families
+    where practical. Separate prompts do not establish economic independence;
+    define ownership and utility separately from model-error correlation.
+  - Each forecaster outputs a probability of passing the declared verifier for
+    each eligible worker BEFORE any answer/outcome for that opportunity appears.
+  - Inputs: task, available upstream state, worker identity/capability card, tool
+    and token limits, and only permitted historical feedback. No hidden tests,
+    reference answers, current latent probabilities, or held-out worker outputs.
+  - Include a cheap historical empirical predictor and a frozen learned predictor
+    trained on development data. This tests whether LLM forecasters earn their
+    cost. Use these as baselines, not extra test-set tuning opportunities.
+  - Freeze invalid-probability, timeout, retry, and missing-forecast rules before
+    testing. Paid failures remain in both cost and success denominators.
+
+Suggested task coverage, in order of setup priority:
+  1. Code: HumanEval+/MBPP+ through EvalPlus; use executable tests and pin the
+     dataset/evaluator. Useful for the all-worker outcome matrix, not sufficient
+     evidence of multiagent workflow performance by itself. [S4]
+  2. Multi-hop QA: MuSiQue with fixed supplied evidence or a frozen retrieval
+     index; use its answer evaluation and a preregistered binary success rule.
+     Exact-match metrics are reproducible but imperfect semantic verifiers. [S5]
+  3. Stateful workflow: AppWorld, evaluated in resettable task environments with
+     its task-completion checks. This is the preferred real workflow test. [S7]
+  4. Optional breadth: a held-out Spider SQL subset using the official distilled
+     test-suite evaluator; split by database. Add JSON transformation only if
+     a fixed generator and exact correctness checker are already available. [S6]
+
+Splits:
+  - Partition by source problem, database, or underlying scenario BEFORE any
+    prompt tuning. Keep related paraphrases and subtasks in the same partition.
+  - Use separate development/pilot and final evaluation sets. For benchmarks
+    with fixed public splits, document any internal split and do not claim an
+    official leaderboard result from a custom subset.
+  - Freeze task IDs, prompts, model snapshots, seeds, limits, scoring rules,
+    evaluation order, hyperparameters, and the analysis plan before final runs.
+  - Online adaptation may use earlier revealed test-stream outcomes if explicitly
+    part of the policy; it may never use future outcomes or evaluator-only labels.
+
+Money and value:
+  - Define principal net value as declared project reward minus all actual
+    principal spending. Include worker calls, forecaster calls, audits, tools,
+    verification, retries, and any implemented score payments.
+  - Distinguish API spending from hypothetical economic transfers. In a social
+    welfare analysis internal transfers cancel; in principal profit they do not.
+    Publish the two ledgers separately where both interpretations are used.
+  - Do not subtract dollars from arbitrary benchmark points without a conversion.
+    Freeze a reward-to-currency conversion on development data and report a
+    sensitivity curve. Also report success at matched dollar budgets, which
+    avoids dependence on an arbitrary reward conversion.
+  - Audit fraction r means a fraction of a fixed, predeclared execution-budget
+    reference B_exec_ref. Total spending, including audits, must remain below
+    B_total. State both denominators and report actual realized audit spending.
+  - Tiny audit fractions require randomized audits across opportunities. Do not
+    round to zero or exclude expensive candidates without reporting loss of
+    positive support. Reserve enough funds for any sampled audit; an infeasible
+    positive-support design must be redesigned, not assigned false propensities.
+  - The unnormalized score sum in the paper can make payment scale with the number
+    of candidates. Freeze beta, P0, and candidate-set size; report expected and
+    worst-case payment exposure. Normalize if needed, documenting the change.
+    Do not retroactively cap payments while claiming the unchanged theorem.
+
+Common budgets:
+  - Pilot a reference cost for running the strongest worker on every project.
+    Use tight/medium/loose caps of 25%, 50%, and 100% of that reference where
+    feasible. Freeze dollar amounts using development data, not test outcomes.
+  - Pick medium as the single primary budget. The other two are sensitivity runs.
+  - All baselines use the same workers, tasks, tools, verifier, and spending rules.
+
+4. E1 -- REAL FORECASTS AND SELECTIVE FEEDBACK [CORE; MODERATE API COST]
+====================================================================
+
+Question: are the forecasts useful without access to true success probabilities,
+and does selected-only observation distort what the router learns?
+
+Setup:
+  - Pilot: 30 distinct problems per cheap family, four workers, two independent
+    decodes per worker. Use code and QA initially: 60 x 4 x 2 = 480 worker calls.
+  - Ask three forecasters for a vector of four worker probabilities per problem
+    before execution: 60 x 3 = 180 forecast calls if batched by worker.
+  - Main planning target: 150 NEW problems per family, with the same four workers
+    and two decodes: 2,400 worker calls and 900 batched forecast calls. Increase
+    distinct problems if the pilot power analysis requires it; this is not a
+    claim that 300 problems are necessarily sufficient.
+  - Store every worker outcome in an evaluator-only outcome matrix. Policies
+    receive only the outcomes their protocol would reveal. Full collection is
+    research measurement cost, never free feedback for a deployed policy.
+  - Use two label-access treatments with identical initial forecasts and update
+    rules: selected-only feedback versus report-independent randomized feedback.
+    Add a feedback-count-matched comparison to isolate label selection from the
+    benefit of receiving more labels. Then report the actual cost-matched result.
+  - For sequential replay, retrain/recompute future predictions only from each
+    policy's allowed history. Reusing one cached adaptive forecast sequence across
+    different feedback histories is invalid. Frozen predictions may be cached.
+
+Comparisons:
+  Historical predictor; cheapest predictor; best individual forecaster chosen on
+  development data; independent equal pool; selected-only weighted pool;
+  CALM-S audit-only weighted pool; full-label learner as a diagnostic ceiling.
+
+Measure:
+  Full-candidate and per-family Brier loss, log loss, calibration slope/intercept,
+  reliability diagrams, selected-versus-full evaluation discrepancy, worker
+  ranking quality, and downstream budgeted value. Predeclare numerical handling
+  of 0/1 probabilities for log loss; do not change settlement silently.
+
+Output: one forecast-quality table and a plot contrasting selected-only estimates
+with evaluator-only full-candidate estimates.
+
+Interpretation:
+  Useful evidence is reduced full-candidate error or better decisions at matched
+  information/spending. A better score only on selected tasks is insufficient.
+  If forecasts are weak, first diagnose the pilot; do not spend on a large router
+  comparison whose essential information source has not been validated.
+
+5. E2 -- END-TO-END UTILITY AND THE AUDIT-COST FRONTIER [HIGHEST PRIORITY]
+======================================================================
+
+Question: does CALM-S provide value beyond equal pooling and ordinary exploration,
+once all costs and the strongest relevant alternatives are included?
+
+Core policy roster:
+  B1 Cheapest feasible worker.
+  B2 Strongest single worker, under the same total budget.
+  B3 Static cost-aware router fitted on development data.
+  B4 Online cost-aware learner with randomized exploration and logged propensity
+     correction, using the same total feedback budget. This is essential: audits
+     must be distinguished from ordinary exploration. Use a transparent tabular
+     or contextual model matching the implemented CALM-S predictor capacity.
+  B5 Coupled self-report with winner-only calibration/settlement.
+  B6 Independent equal pool, no audits.
+  B7 Independent selected-only weighted pool, no audits.
+  B8 CALM-S, audit-only updates and a development-selected positive audit rate.
+  B9 Agora reproduction, if feasible; closest orchestration comparison. [S2]
+  B10 AgentLance reproduction if retaining the market-performance claim. [S3]
+
+Use authors' code/configuration when available and document deviations. A
+tabular reputation rule is not AgentLance, and noisy self-confidence is not
+Agora. If full reproductions cannot be completed, narrow the claims and label
+proxies. Do not spend the last week implementing many low-value weak baselines.
+
+Protocol:
+  - Run B1-B8 at the primary budget on both cheap families and the workflow
+    suite from E5. Include at least the closest faithful external baseline where
+    its task assumptions fit; explain unmatched benchmark coverage explicitly.
+  - For B8 sweep r in {0, 0.5, 1, 2, 5, 10}% of B_exec_ref. The r=0 version has
+    frozen audit weights and no ongoing audit-settlement guarantee; it is an
+    ablation, not a positive-support mechanism.
+  - Tune the deployed positive rate only on development data. Report every
+    preregistered rate on test data as a frontier, not a best-test-rate headline.
+  - Evaluate tight/loose budgets on the core contrasts B4, B6, B7, B8 after the
+    medium-budget run. Avoid a full cross product of all experimental factors.
+  - Start with stationary honest agents. Repeat the core contrasts under E3
+    manipulation and E4 drift, reporting these regimes separately.
+  - Offline replay is valid only where cached task-worker outcomes are invariant
+    to the policy state. Actual workflows require on-policy execution (E5).
+
+Primary contrast: locked CALM-S versus the strongest non-audited comparator
+selected on development data, with equal pooling always shown explicitly.
+Also report the exploration comparison separately, whether or not it is strongest.
+
+Primary outcome: paired difference in fully costed episode net value.
+Secondary: completion, success at fixed spend, lower-tail value, total spending,
+audit/forecast/payment components, p50/p95 wall latency, and budget violations.
+
+Output: main results table plus audit rate versus net value, with paired
+uncertainty bands and cost decomposition. Show the zero-audit point.
+
+Decision rule:
+  - Broad practical benefit requires a positive held-out advantage against strong
+    comparators at common budgets, not merely against a frozen weak router.
+  - If audits help only under manipulation/drift, make that the explicit claim
+    and quantify the stationary-case insurance cost and the break-even regime.
+  - If no tested rate pays for itself, retain the negative result and remove a
+    general performance-improvement claim. Do not change rewards until it wins.
+
+6. E3 -- PROFITABLE DEVIATIONS, NOT JUST ONE INFLATION RULE [CORE]
+================================================================
+
+Question: does the mechanism make truthful belief reporting optimal under its
+assumptions, and how exploitable is it when those assumptions are relaxed?
+
+Part A: controlled known-belief mechanism experiment (cheap simulation).
+  - Sweep p in {0.1,0.3,0.5,0.7,0.9}, selection threshold in {0.3,0.5,0.7},
+    bonus/score-scale ratio in {0,0.5,1,2}, and audit observation probability in
+    {0.01,0.05,0.2,1}. These probabilities are not cost-budget percentages.
+  - Search reports q on a 0.01 grid over [0,1], including q=p and the threshold.
+    Compare truthful reports, fixed inflation, deflation, threshold targeting,
+    and the best report in the searched class. Use exact expected payoffs for
+    one-step cases and Monte Carlo to check implemented payments and variance.
+  - Compare coupled winner-only scoring; coupled allocation bonus plus independent
+    audit scoring; separated audit-only scoring. The middle condition isolates
+    why auditing alone does not remove allocation-side interests.
+  - Report within-mechanism deviation gain and selection change. Raw payoff
+    levels across different payment schemes are not directly comparable.
+
+Part B: strategic policies on real outcomes from E1/E5.
+  - Freeze each agent's baseline belief report before applying strategic changes.
+    Real LLM truth is unobserved: call this an elicited baseline, not known truth.
+  - Optimize deviation parameters on development outcomes, then evaluate on
+    held-out tasks. Apply attacks to 0%, 25%, and 50% of eligible participants.
+  - Include report-only strategic wrappers first, so manipulation is isolated
+    from changes to worker effort or competence. Optional LLM agents receive an
+    explicit payoff objective and bounded search budget; failure to find an
+    attack is not proof that none exists.
+  - Record agent profit/deviation gain, allocation changes, principal net value,
+    honest-agent displacement, and forecaster payment variance.
+
+Part C: assumption boundaries (small controlled extension).
+  - Add allocation-side utility lambda in {0,0.25,1,4} relative to score scale,
+    including a worker-owned forecaster and a colluding pair.
+  - Search a two-window deviation: alter reports now to affect future audit-only
+    weights, state, selection, and profit. Delayed weights alone do not establish
+    a repeated-game equilibrium; future report-dependent exposure matters.
+  - Keep lambda=0/theorem-compliant results separate from boundary violations.
+
+Output: deviation-gain table and gain-versus-side-interest curve. Analytic
+one-step results should agree with the implementation. Search results are lower
+bounds on exploitability unless a global best response is actually solved.
+
+7. E4 -- ADAPTATION WITHOUT LATENT-PROBABILITY LEAKAGE [CORE]
+==========================================================
+
+Question: do audits discover changes that selected-only feedback misses?
+
+The existing simulator gives forecasters biased/noisy versions of CURRENT true
+probabilities. Its shift result is therefore not evidence that agents learn
+unknown changes from sparse feedback. This experiment must remove that shortcut.
+
+Setup:
+  - Use frozen real-model responses where replay is valid, or real executions.
+    Forecasters initially learn only from the development history.
+  - Streams of 80 episodes, a predeclared change at episode 40; use 30 simulator
+    seeds for cheap screening. For real streams, size independent task blocks
+    using the pilot; resampling cached labels does not create new task evidence.
+  - Three conditions: no shift; task-mixture shift from 50/50 to 80/20 between
+    two predeclared strata; unannounced worker-capability change (e.g. reduced
+    tool/token access for one worker). Mark the latter as an induced stress test.
+  - Include an overlooked worker that improves after the change. Initial ranking
+    and improvement must be specified before observing final-test outcomes.
+  - Update predictions using only allowed past feedback, with one-window delay.
+    Repeat key conditions with three-window delay. Do not disclose the changed
+    capability matrix or exact change time to the policies.
+
+Compare: B3, B4, B6, B7, B8, with the same initial predictor and total budgets.
+
+Measure: post-change cumulative value loss versus a separately identified
+reference, time until the policy changes worker preference, worker coverage,
+forecast error, and total audit spend. Report no-shift cost as well.
+
+Output: post-shift learning curves and cumulative value/cost table. If only
+synthetic shifts are feasible, label external validity accordingly.
+
+8. E5 -- A REAL DEPENDENT WORKFLOW [CORE; HIGHEST EXECUTION COST]
+==============================================================
+
+Question: does the task-DAG orchestration claim survive genuine downstream
+dependencies, replanning, and stateful shadow audits?
+
+Preferred setup: AppWorld tasks in resettable environments. Pilot 20 distinct
+tasks; plan 80-120 NEW final tasks if available and feasible, subject to power.
+Use valid released evaluation splits and keep tuning scenarios separate.
+
+Workflow definition:
+  - Freeze a common decomposition/planner for all compared allocation policies.
+    Log actual ready nodes, dependencies, observations, failures, and replans.
+  - Allocate worker calls at declared decision nodes. Judge success with the
+    benchmark's final environment/task checks. Do not award completion merely
+    because a language model says all subtasks are complete.
+  - A shadow audit forks the exact eligible pre-action state, executes an
+    alternative worker in that fork, verifies the local outcome, and discards
+    the shadow state. It must not alter the production environment.
+  - Define what local binary outcome is forecast. A local action verifier may
+    not predict final project success; measure that relationship explicitly.
+  - If intermediate states cannot be cloned and verified, audit complete tasks
+    from reset and narrow the mechanism claim to that granularity. Do not claim
+    unobserved subtask counterfactuals from unrelated standalone executions.
+
+Comparisons: CALM-S DAG/receding horizon; same forecasts/audits with myopic
+selection; equal-pool DAG allocator; exploration baseline; strongest single
+worker. Add the closest external system where its interface permits fairness.
+
+Measure: final completion, fully costed value, dependency-induced failures,
+replans, calls, critical-path latency, and orphaned work with no final value.
+On small instances solve allocation exactly to report optimizer gaps; distinguish
+estimated-oracle and hindsight upper bounds from a true probability oracle.
+
+Output: workflow results table plus two representative trace diagrams selected
+by a declared rule (e.g. median successful and median failed run), not anecdotes
+presented as statistical evidence.
+
+If AppWorld setup is impossible in time, implement a versioned executable
+code/data workflow with actual upstream outputs and final integration tests.
+Label it a constructed workflow; grouping independent questions into a project
+does not establish real dependency handling.
+
+9. E6 -- ABLATIONS THAT IDENTIFY THE CONTRIBUTION [CORE; TARGETED]
+================================================================
+
+Run on one cheap family plus the workflow suite; use the same forecasts and
+budget wherever the comparison permits. Do not cross every knob with every other.
+
+Core ablations:
+  A. Equal vs audit-weighted pooling, HOLDING audits and their cost fixed.
+     Separately compare equal/no-audit to expose the cost of collecting labels.
+  B. Audit-only vs selected-only updates with matched label count and learner;
+     additionally show matched total spend. These answer different questions.
+  C. Inverse-propensity vs unweighted audit updates under NONUNIFORM auditing.
+     Uniform sampling cannot meaningfully establish the need for correction.
+  D. Separated vs coupled incentives with the same forecast information quality
+     in simulation. Do not confound independence with an artificially better p.
+  E. DAG/receding-horizon vs myopic allocator with fixed forecasts and audit policy.
+  F. Equal pooling vs exponential weights vs stacking vs Bayesian pooling, fitted
+     only on allowed data. The draft explicitly promises these pooling ablations.
+     Define the Bayesian model and the stacking learner before final evaluation.
+
+Lower-priority extensions:
+  G. One vs three forecasters, including correlated/same-family forecasters.
+  H. Frozen vs delayed online weights; show feedback lag sensitivity.
+  I. Cheap historical/learned forecasts vs LLM forecasts including inference cost.
+
+Output: compact component table, with incremental value and cost. It is acceptable
+for equal pooling to win; revise the weighting claim rather than hide the result.
+
+10. E7 -- PROPENSITY VARIANCE AND SETTLEMENT RELIABILITY [OPTIONAL]
+================================================================
+
+Question: is the formally unbiased score operationally usable at sparse audits?
+
+Use the E1 full-outcome matrix and a fixed report set. Sample audits repeatedly
+under uniform and predeclared worker-stratified policies, all with positive
+inclusion probabilities. For nonuniform sampling use weight ratios 1:2:4:8 over
+the four workers as one transparent stress case, with correct marginal inclusion
+probabilities for the actual sampling procedure.
+
+Compare unclipped Horvitz-Thompson, clipped weights at 10/50/100, and optionally
+self-normalized estimates. Mark clipped/self-normalized variants as generally
+biased, and do not transfer the original truthfulness guarantee without analysis.
+
+Report estimator bias/RMSE against the fixed full-matrix score, coverage, effective
+sample size, max inverse weight, payment variance and high payment quantiles,
+forecaster-ranking error, and routing value. Repeat across independently sampled
+outcome matrices to distinguish audit noise from model-outcome uncertainty.
+
+Output: bias/variance/payment frontier. Also test repeated-game and outcome-shift
+boundaries from E3; these are not addressed by a one-shot proper-score identity.
+
+11. STATISTICAL PLAN -- FREEZE BEFORE THE MAIN RUN
+=================================================
+
+  - Primary H1: paired mean fully costed value improvement of locked CALM-S
+    against the development-selected strongest non-audited baseline at the
+    medium budget. Equal pooling and the exploration baseline remain visible.
+  - Define three secondary hypotheses before looking: reduction in deviation
+    gain in E3; improved full-candidate forecast error in E1; and improved
+    post-shift cumulative value in E4. Apply Holm correction to these three.
+    Treat broad rate/budget/benchmark sweeps as estimation/exploration unless
+    a larger multiplicity plan is explicitly preregistered.
+  - Preserve paired tasks across policies. For independent problems, bootstrap
+    at the original-problem cluster level and stratify by family. Repeated
+    decodes stay within their problem; they are not independent samples.
+  - For adaptive streams bootstrap independent whole streams or appropriate
+    predeclared blocks; an iid episode bootstrap destroys temporal dependence.
+    Reused tasks across streams require clustering by original task as well.
+  - Equal-weight family aggregates should be declared in advance; show each
+    family's results so aggregate wins cannot hide regressions.
+  - Pilot power: choose smallest worthwhile effect delta on the declared value
+    scale. If using the draft's 5% of oracle value, freeze a positive development
+    oracle reference; never use a test-selected oracle or unstable near-zero one.
+    For paired independent units, an initial normal approximation is
+      n ~= ((1.96 + 1.282) * SD_paired_difference / delta)^2.
+    Example: SD=0.25, delta=0.05 gives about 263 independent paired units.
+    This is illustrative, not an observed variance. Refine for clustering and
+    stream dependence by simulation and predeclare final n and stopping rules.
+  - Use 95% paired confidence intervals and effect sizes. A nonsignificant
+    difference does not establish equivalence. No repeated peeking until p<0.05.
+  - True pseudo-regret is available in the known-probability simulator. For real
+    LLMs use held-out estimated probabilities with uncertainty, or label an
+    empirical/hindsight gap correctly. Two decodes do not reveal true p.
+  - Keep all valid seeded runs; publish exclusions, failed calls, retry charges,
+    provider incidents, and missingness. Report worst-decile results with enough
+    independent cases to make them meaningful, or label them exploratory.
+
+12. WHAT NEEDS TO BE LOGGED AND HANDED OVER
+==========================================
+
+Per decision/opportunity:
+  run_id, policy/config hash, task/source cluster, family, split, episode/window,
+  model snapshot, prompt hash, state hash, candidate workers, permitted history,
+  reported probabilities, pool weights, worker offers, chosen assignment,
+  audit sampling policy, actual inclusion probability, audit draw, reveal time,
+  worker output, verifier/version/outcome, tool usage, tokens, every cost item,
+  forecast payment, budget remaining, latency, errors/retries, and random seeds.
+
+Separate evaluator-only labels from policy-visible logs. State clones and
+counterfactual worker outputs must never leak into policy prompts or updates.
+
+Expected output files (suggested names, not existing artifacts):
+  configs/*.yaml                    Frozen run configurations
+  preregistration.txt               Hypotheses, splits, sample size, exclusions
+  model_and_price_manifest.csv      Snapshots, limits, pricing timestamps
+  forecast_records.jsonl            Pre-outcome forecasts and metadata
+  worker_outcomes.jsonl             Verifier outcomes and accounting
+  decisions_and_audits.jsonl        Allocation, probabilities, delayed reveals
+  full_cost_results.csv             Main paired result data
+  deviation_results.csv             Per-mechanism strategy comparisons
+  audit_frontier.csv                Every tested rate and uncertainty
+  reproduce_results.py             Tables and figures from retained logs
+  README.txt                       Setup and one-command reproduction
+
+Research costs (e.g. collecting evaluator-only all-worker outcomes) and deployed
+policy costs must both be reported, but not conflated. A cache saves rerun expense;
+each policy must still be charged what its actual deployment would have consumed.
+
+13. RESOURCE ESTIMATE AND EXECUTION ORDER
+========================================
+
+The code/QA pilot requires approximately 480 worker and 180 batched forecast calls.
+The proposed main frozen-matrix collection requires 2,400 worker and 900 batched
+forecast calls. Counts exclude retries, calibration calls, adaptive recomputation,
+baseline-specific calls, verifier/tools, and all workflow execution.
+
+Workflow cost scales approximately as:
+  independent tasks x policies x repeats x mean decisions per task
+  x (worker cost + forecast cost per decision) + audits/tools/settlement.
+For example, 100 tasks x 5 policies x 2 repeats x 8 decisions is 8,000 production
+worker calls before audits and forecasting. This is a planning example; measure
+decision counts and token lengths in the pilot before committing the budget.
+
+Estimate dollars from measured pilot token/tool use and the chosen model prices;
+no defensible dollar estimate is possible without those model IDs and limits.
+
+Suggested schedule given the current date:
+  Sep 17-19: E0; fix accounting; select models; implement/freeze pilot harness.
+  Sep 20-23: E1 and E5 pilots; E3 analytic/simulator work; estimate power/cost.
+  Sep 24-30: freeze final protocol; collect held-out E1/E2/E5 data; E4 streams.
+  Oct 1-3: complete targeted E6; analyze fixed hypotheses; E7 only if feasible.
+  Oct 4-7: regenerate paper tables, explain negative results, package artifacts.
+
+This is an aggressive schedule, especially from the files currently supplied.
+If constrained, preserve cost accounting, real forecasts, strong controls,
+strategic deviations, and one real workflow. Drop SQL breadth, extra model
+families, and expansive parameter sweeps first. Do not replace adequate sample
+size with many correlated repeats or claim four families when only two ran.
+
+Immediate conference logistics: the official main-track call lists author
+registration as Sep 17, abstract submission Oct 1, and paper submission Oct 8,
+2026, all end-of-day Anywhere on Earth. Verify registration today. [S1]
+
+14. WHAT THE FINISHED PAPER SHOULD SHOW
+======================================
+
+Main text, in priority order:
+  1. Fully costed real-model results with equal pooling and exploration controls.
+  2. Audit-rate/value frontier, including unfavorable stationary results.
+  3. Deviation-gain evidence, showing the no-side-interest assumption explicitly.
+  4. Genuine workflow results and a compact causal/component ablation.
+  5. Learning-after-shift curve if supported by permitted feedback only.
+
+Supplement: full protocol, task/model versions, power analysis, pooling variants,
+estimator/payment variance, per-family results, all rates, and reproduction steps.
+
+Acceptance-relevant interpretation (my judgment, not conference requirements):
+  - Strongest outcome: a reproducible regime where CALM-S reduces manipulation or
+    selection bias AND improves fully costed real-workflow value versus strong
+    controls, with clear assumptions and failure boundaries.
+  - Useful narrower outcome: audited settlement buys strategic protection at a
+    measured cost, paying off only when manipulation or drift is sufficiently
+    common. Report the break-even conditions honestly.
+  - Weak outcome: independent forecasts beat static routing, but audits never
+    help and strategy tests only restate the one-shot theorem. That does not
+    adequately validate the central CALM-S contribution as currently framed.
+
+No experiment can repair an overstated theory claim. Clarify one-shot versus
+repeated-game truthfulness, conditional audit/outcome independence, matching
+shadow/production outcome distributions, marginal versus joint DAG success,
+and principal spending versus welfare. The draft's simple propositions should
+not be advertised as a general truthful agent market or a learned-regret theorem.
+
+The draft currently says a full preregistration and generating script are included;
+they were not present in this supplied folder. Recover/add them or correct those
+statements. A prospective protocol written now is not evidence of a completed
+real-model study and must not be described as registered before prior analyses.
+
+15. SOURCES AND SCOPE
+====================
+
+Official dates and review criteria checked 17 September 2026. AAMAS identifies
+originality, significance, soundness, reproducibility, clarity, relevance, and
+engagement with prior work as evaluation criteria. The prioritization above is
+my inference from those criteria and this draft's specific evidence gaps. [S1]
+
+[S1] AAMAS 2027 official main-track call:
+https://warwick.ac.uk/fac/sci/dcs/aamas2027/calls/call-for-main-track/
+
+[S2] Agora, primary paper record (consult full paper/code for reproduction):
+https://arxiv.org/abs/2607.09600
+
+[S3] AgentLance, primary paper record (consult full paper/code for reproduction):
+https://arxiv.org/abs/2608.23867
+
+[S4] EvalPlus official repository:
+https://github.com/evalplus/evalplus
+
+[S5] MuSiQue official repository:
+https://github.com/StonyBrookNLP/musique
+
+[S6] Official text-to-SQL test-suite evaluator:
+https://github.com/taoyds/test-suite-sql-eval
+
+[S7] AppWorld official repository:
+https://github.com/StonyBrookNLP/appworld
+
+Model IDs, pricing, exact benchmark versions, and external baseline fidelity
+remain setup decisions to verify and freeze. The plan does not assume access
+to unreleased labels or private datasets, and does not assert a numerical
+acceptance probability.

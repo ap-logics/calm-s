@@ -1,0 +1,4 @@
+arm,reference,paired_units,difference,ci95_low,ci95_high
+calms|r=0.05|pool=default,equal|r=0|pool=default,30,-0.3202458333333333,-0.4073791666666666,-0.2334833333333333
+myopic|r=0.05|pool=default,equal|r=0|pool=default,30,-0.34254583333333327,-0.43789583333333326,-0.24855833333333333
+selected|r=0|pool=default,equal|r=0|pool=default,30,-0.20784583333333329,-0.2822416666666666,-0.13586249999999994

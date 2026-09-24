@@ -1,0 +1,23 @@
+CALM-S expanded run validation, 23 September 2026
+
+- All 41 offline harness tests passed under Python 3.14.7 (analysis shell).
+- All 41 offline harness tests passed under Python 3.12.10 (live launch runtime).
+- Tests block urllib.request.urlopen and do not use provider APIs.
+- Added checks demonstrate that expected utility-cost estimates can change
+  routing choices but cannot relax single-step or lookahead budget reserves.
+- Verified 829 source component IDs are disjoint across both original pilot
+  groups and all new whole-question/workflow groups.
+- Validated all normalized task schemas and topological dependencies.
+- Verified count-matched feedback arms reveal identical numbers of labels.
+- Exercised the full offline expanded reporting pipeline using original pilot
+  data and dummy workflow rows in a temporary test directory. It completed
+  successfully without inspecting new test outcomes. Dummy rows are not results.
+- Intermediate trace export verified 1,847 reconstructed request identities
+  against the billing ledger; two additional requests were then in flight.
+- Original CALM-S-code.zip core hash matches the first pilot manifest:
+  306bb1c7905a0146b0e0d945c16bee3912b0e8af20f329191e1d34443854bb81
+- Expanded core source snapshot hash:
+  bf1dc80b6f83125810ea8540783eb1728118609b7c32d46bf59f8b376b702748
+
+Final budget/trace/analysis checks are recorded in analysis/complete.json,
+retained-traces/trace-index.json, and CALMS_ARCHIVE_RECEIPT.json after completion.

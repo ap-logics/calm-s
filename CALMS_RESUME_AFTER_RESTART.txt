@@ -1,0 +1,69 @@
+CALM-S: RESUME AFTER VIRTUALIZATION IS ENABLED
+23 September 2026
+
+This study is NOT complete. No experiment process is currently running.
+All paid work remains cached in calms_runs/api_ledger.sqlite.
+Spend is $16.0291502; the existing cumulative ceiling is $99.
+Do not create a fresh ledger or reset its spending total.
+
+MACHINE BLOCKER
+Win32_Processor.VirtualizationFirmwareEnabled returned False.
+Two attempts to install dedicated WSL2 distribution CALMS-Linux failed with
+HCS_E_HYPERV_NOT_INSTALLED. wsl --install --no-distribution reported success,
+but did not resolve the firmware requirement. No restart was initiated.
+The user will enable virtualization and restart later.
+
+AFTER RESTART
+1. Recheck firmware virtualization and Windows Virtual Machine Platform.
+   If the Windows feature is still disabled, an Administrator terminal is needed
+   to enable it. Do not restart the computer automatically.
+2. Check whether CALMS-Linux exists before repeating installation:
+   wsl --list --verbose
+   If absent, install the dedicated Ubuntu-24.04 WSL2 distribution, named
+   CALMS-Linux, into this workspace's .calms-linux directory, without launching
+   an interactive desktop. Do not unregister or modify unrelated distributions.
+3. Install Docker Engine within that Linux environment using the official guide.
+   Run the CALM-S Python process there against this same workspace/ledger.
+4. Build the prepared coding image from the minimal context (no .env mounted):
+   docker build -t calms-evalplus:20260923 calms_data/code-runtime
+5. Validate before spending:
+   python scripts_calms/run_code_benchmarks.py --check-only
+   Both benchmark families must pass canonical-solution and negative controls.
+   The official EvalPlus adapter is syntax checked, but NOT runtime validated yet.
+6. Run development, then test, preserving all artifacts:
+   python scripts_calms/run_code_benchmarks.py --split dev --live --max-usd 99
+   python scripts_calms/run_code_benchmarks.py --split test --live --max-usd 99
+   Do not launch both stages together: test requires development-fitted cards
+   and cost estimates. Two worker decodes, four workers, three forecasters.
+   80 dev + 200 test tasks means at most 3,080 new API calls for full collection.
+   The cap can stop collection before completion; retain partial records.
+7. Analyze code matrices with the existing static-fit/replay/attack machinery;
+   freeze development-selected settings before opening code test outcomes.
+   This is a new benchmark protocol, not an externally registered experiment.
+
+IMPLEMENTATION STILL NEEDED, BEYOND THE MACHINE BLOCKER
+- Genuine AppWorld task lifecycle, resettable shadow execution and verification.
+  Official source is retained at calms_data/external-sources/appworld. The QA DAG
+  experiment is not AppWorld, and no AppWorld agent is claimed ready.
+- Faithful applicable Agora / AgentLance adaptations. Existing coupled scores
+  and new coalition simulations are not reproductions of either system.
+- Live controlled shift streams, two-window reputation/ownership attacks, and
+  confirmatory power/replication design. Existing drift evidence is synthetic.
+- The original historical simulator is missing; it cannot be reconstructed by
+  relabeling the new simulator. Retain the budget-accounting discrepancy.
+
+NEW WORK COMPLETED BEFORE RESTART
+- 31 real-matrix routing arms, 4,650 episode records; development-selected
+  contextual epsilon-greedy, equal pooling with identical audit costs, three
+  pooling methods, nonuniform IPS, delayed updates and one-forecaster ablations.
+- Exact conditional propensity moments and 24,000 Monte Carlo trials on real
+  matrices, with complete audit selections, estimates and effective sample sizes.
+- 120 development-fitted affine coalition settings; 18,000 held-out comparisons.
+- Official expanded HumanEval+ and MBPP+ data retained; splits fixed at 80 dev,
+  200 test, with remaining tasks held unused. Dataset and source hashes saved.
+- 44 tests passed. New coding adapter syntax checked; Docker execution pending.
+
+See calms_runs/remaining-replays-20260923/RESULTS.txt for findings and limitations.
+Do not describe the Monte Carlo trials as additional independent task samples.
+Do not overwrite CALM-S-experiments-20260923.zip or its original receipts.
+All raw recorded data and all negative results must remain available.

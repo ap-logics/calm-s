@@ -1,0 +1,3 @@
+arm,reference,paired_units,difference,ci95_low,ci95_high
+calms|r=0.005|pool=exponential,contextual_static|r=0|pool=exponential,10,-0.011048370666666663,-0.011317879999999987,-0.010798313333333318
+equal|r=0|pool=exponential,contextual_static|r=0|pool=exponential,10,-0.010984170666666664,-0.011276664,-0.010711301333333334

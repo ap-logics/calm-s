@@ -1,0 +1,5 @@
+arm,reference,paired_units,difference,ci95_low,ci95_high
+calms|r=0.02|pool=default,static|r=0.02|pool=default,3,-0.038442425,-0.07359037500000001,0.004298775000000005
+equal|r=0.02|pool=default,static|r=0.02|pool=default,3,-0.025128158333333334,-0.043929475,-0.014446600000000004
+explore|r=0.02|pool=default,static|r=0.02|pool=default,3,-0.03543556666666667,-0.055287475,0.003150449999999999
+selected|r=0.02|pool=default,static|r=0.02|pool=default,3,-0.035639550000000006,-0.06954070000000001,-0.017722825000000005
