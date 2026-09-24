@@ -80,6 +80,7 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--live',action='store_true')
     parser.add_argument('--smoke',action='store_true');parser.add_argument('--split',choices=['dev','test'],default='dev')
     parser.add_argument('--task-id')
+    parser.add_argument('--session-suffix',default='',help='Explicit fresh transport attempt; original traces remain untouched')
     args=parser.parse_args()
     if not args.live: raise SystemExit('No API calls; hosted agent runs require --live')
     runtime_bundle=bundle()
@@ -125,7 +126,7 @@ def main():
                 if completed.exists():
                     saved=read_json(completed);observations.append(saved['outcomes'])
                     reports=saved['reports'];forecast_records=saved['forecast_records'];continue
-                session=Session(taskdir/f'session-{repeat}',runtime_bundle)
+                session=Session(taskdir/f'session-{repeat}{args.session_suffix}',runtime_bundle)
                 outcomes=[]
                 try:
                     for worker in config['workers']:

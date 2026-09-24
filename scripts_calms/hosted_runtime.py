@@ -51,11 +51,17 @@ class HostedRuntime:
         write_json(self.output/f'{name}.request.json',{'method':method,'path':path,'body':payload,
                    'upload_sha256':hashlib.sha256(upload.read_bytes()).hexdigest() if upload else None})
         req=urllib.request.Request('https://api.openai.com/v1/'+path,data=data,headers=headers,method=method)
-        try:
-            with urllib.request.urlopen(req,timeout=1200) as response: raw=response.read()
-        except urllib.error.HTTPError as e:
-            (self.output/f'{name}.error.json').write_bytes(e.read())
-            raise RuntimeError(f'Hosted HTTP {e.code}; error body retained') from None
+        for attempt in range(4):
+            try:
+                with urllib.request.urlopen(req,timeout=1200) as response: raw=response.read()
+                break
+            except urllib.error.HTTPError as e:
+                (self.output/f'{name}.attempt-{attempt}.error.json').write_bytes(e.read())
+                # Only idempotent reads retry; never repeat a paid POST whose
+                # execution/billing may be ambiguous.
+                if method=='GET' and e.code in (429,500,502,503,504) and attempt<3:
+                    time.sleep(2**(attempt+1));continue
+                raise RuntimeError(f'Hosted HTTP {e.code}; error body retained') from None
         (self.output/f'{name}.response.{"bin" if binary else "json"}').write_bytes(raw)
         return raw if binary else json.loads(raw)
 
