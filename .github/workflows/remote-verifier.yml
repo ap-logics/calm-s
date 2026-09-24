@@ -1,0 +1,68 @@
+name: CALM-S isolated remote verifier
+run-name: CALM-S ${{ inputs.mode }} ${{ inputs.batch_tag }}
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Runtime validation or an uploaded coding batch (no model API calls)
+        type: choice
+        options: [runtime-smoke, code-batch]
+        default: runtime-smoke
+        required: true
+      batch_tag:
+        description: Private release tag calms-code-batch-* containing batch.json
+        type: string
+        default: ''
+permissions:
+  contents: write
+concurrency:
+  group: calms-remote-verifier
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      MODE: ${{ inputs.mode }}
+      BATCH_TAG: ${{ inputs.batch_tag }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Restore evidence and validate coding runtime
+        run: python scripts_handoff/bootstrap_remote.py --verify
+      - name: Validate AppWorld runtime
+        if: inputs.mode == 'runtime-smoke'
+        run: python scripts_handoff/bootstrap_remote.py --appworld
+      - name: Download and verify coding batch
+        if: inputs.mode == 'code-batch'
+        run: |
+          python -c 'import os,re; assert re.fullmatch(r"calms-code-batch-[a-zA-Z0-9-]+",os.environ["BATCH_TAG"])'
+          mkdir -p downloads/batch
+          gh release download "$BATCH_TAG" --repo "$GITHUB_REPOSITORY" --pattern batch.json --dir downloads/batch
+          python scripts_handoff/verify_code_batch.py downloads/batch/batch.json
+      - name: Preserve runtime outputs and publish verification result
+        if: always()
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          python scripts_handoff/package_verification.py
+          if [ "$MODE" = code-batch ]; then
+            python -c 'import os,re; assert re.fullmatch(r"calms-code-batch-[a-zA-Z0-9-]+",os.environ["BATCH_TAG"])'
+            gh release upload "$BATCH_TAG" verification-results.zip verification-receipt.json --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "runtime-validation-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" verification-results.zip verification-receipt.json --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "CALM-S runtime validation ${GITHUB_RUN_ID}" --notes "Isolated runtime validation only. No model API calls. See the receipt and retained logs for success/failure."
+          fi
+      - name: Backup verification output
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: verification-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            verification-results.zip
+            verification-receipt.json
+          retention-days: 14

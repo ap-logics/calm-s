@@ -48,8 +48,10 @@ def main():
     if total < 16.0291502-1e-8:
         raise RuntimeError('Unexpected fresh ledger; do not start paid work')
     run([sys.executable,'-m','unittest','discover','-s','tests_calms','-v'],log)
-    summary={'platform':platform.platform(),'python':sys.version,'api_spend':total,'pending_calls':pending,
-             'model_api_calls_made':0,'coding_verifier_validated':False,'appworld_runtime_validated':False}
+    previous=json.loads((state/'status.json').read_text()) if (state/'status.json').exists() else {}
+    summary={**previous,'platform':platform.platform(),'python':sys.version,'api_spend':total,'pending_calls':pending,
+             'model_api_calls_made':0,'coding_verifier_validated':previous.get('coding_verifier_validated',False),
+             'appworld_runtime_validated':previous.get('appworld_runtime_validated',False)}
     if args.verify:
         # Recreate context from current versioned adapter, preserving official source.
         run([sys.executable,'scripts_calms/prepare_code_runtime.py'],log)
