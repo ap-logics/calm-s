@@ -69,7 +69,7 @@ class HostedRuntime:
         self.sequence+=1
         return self.request(f'upload-{self.sequence}','POST','containers/'+self.container+'/files',upload=Path(path))['path']
 
-    def shell(self,command):
+    def shell(self,command,allow_missing_file_retry=True):
         # End sessions well within one conservatively charged 20-minute block.
         if time.monotonic()-self.started>900: raise RuntimeError('Session age limit reached; save artifacts and start a new session')
         self.sequence+=1; name=f'shell-{self.sequence}'
@@ -82,8 +82,23 @@ class HostedRuntime:
         cost=((usage['input_tokens']-cached)*2+cached*.2+usage['output_tokens']*10)/1e6
         self.settle(key,{'cost_usd':cost,'infrastructure':True,'usage':usage,'response_id':response['id']})
         calls=[i for i in response.get('output',[]) if i['type']=='shell_call']
-        if len(calls)!=1 or calls[0]['action']['commands']!=[command]: raise RuntimeError('Unexpected hosted command')
         outputs=[o for i in response['output'] if i['type']=='shell_call_output' for o in i['output']]
+        if len(calls)!=1 or calls[0]['action']['commands']!=[command]:
+            # A confirmed filename transcription error can be retried only when
+            # our trusted RPC client failed before loading/submitting a request.
+            import shlex
+            expected=shlex.split(command)
+            actual=shlex.split(calls[0]['action']['commands'][0]) if len(calls)==1 and len(calls[0]['action']['commands'])==1 else []
+            if (allow_missing_file_retry and len(expected)==len(actual)==3
+                and actual[:2]==expected[:2]==['python','/tmp/appworld/client.py']
+                and actual[2].startswith('/mnt/data/') and len(outputs)==1
+                and outputs[0]['outcome'].get('exit_code')==1 and not outputs[0]['stdout']
+                and 'FileNotFoundError' in outputs[0]['stderr']
+                and 'request=json.loads(Path(sys.argv[1]).read_text())' in outputs[0]['stderr']
+                and repr(actual[2]) in outputs[0]['stderr']):
+                write_json(self.output/f'{name}.safe-retry.json',{'reason':'Native client failed to read mistyped filename before RPC submission','expected':command,'actual':actual})
+                return self.shell(command,allow_missing_file_retry=False)
+            raise RuntimeError('Unexpected hosted command')
         if len(outputs)!=1: raise RuntimeError('Missing native shell output')
         return outputs[0]
 

@@ -1,0 +1,5 @@
+worker,tasks,success,task_ci_low,task_ci_high
+openai_small,19,0.0,0.0,0.0
+anthropic_small,19,0.0,0.0,0.0
+openai_large,19,0.0,0.0,0.0
+anthropic_large,19,0.2894736842105263,0.10526315789473684,0.47368421052631576

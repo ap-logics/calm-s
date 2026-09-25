@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "primary_budget": 0.2,
+  "reward": 0.25,
+  "stream_length": 20,
+  "rates": [
+    0,
+    0.005,
+    0.01,
+    0.02,
+    0.05,
+    0.1
+  ],
+  "budgets": [
+    0.05,
+    0.1,
+    0.2,
+    0.5
+  ],
+  "ordering": "sha256(task_id), pooled families",
+  "audit_selection": "best positive rate by development net value; lower rate breaks ties",
+  "comparators": "best non-CALMS development arm and equal pooling",
+  "intervals": "paired disjoint-stream percentile bootstrap, 5000 resamples; 97.5% intervals for two primary contrasts (Bonferroni)",
+  "interpretation": "Frozen pre-outcome forecasts; adaptive replay of recorded worker decodes, not live policy-dependent forecasts. No actual transfers.",
+  "hosting": "Infrastructure collection cost reported separately; routing utility includes model forecasts, chosen worker and audit. Reward is a declared conversion, not measured business value."
+}

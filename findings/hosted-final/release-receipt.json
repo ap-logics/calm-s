@@ -1,0 +1,21 @@
+{
+  "archive": "CALM-S-hosted-increment-20260925T034101Z.zip",
+  "bytes": 165544695,
+  "sha256": "2df5d3ecb36e073c231c0a33f2e794d4d943e18a55e35c4da5ee917e0d67edf6",
+  "files": 44671,
+  "accounting": [
+    [
+      "done",
+      11318,
+      44.7205364
+    ],
+    [
+      "pending",
+      1,
+      0.1
+    ]
+  ],
+  "new_studies_complete": true,
+  "credential_scan": "passed",
+  "base_archive": "CALM-S-experiments-20260923-extension.zip from handoff-2026-09-24"
+}

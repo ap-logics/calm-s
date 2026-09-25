@@ -1,0 +1,20 @@
+{
+  "scope": "Exploratory task-level AppWorld agent allocation",
+  "reward": 1.0,
+  "budget": 2.5,
+  "rates": [
+    0.005,
+    0.01,
+    0.02,
+    0.05,
+    0.1
+  ],
+  "development_tasks": 8,
+  "held_out_tasks": 19,
+  "development_split": "official train, distinct templates, variant 1 only",
+  "held_out_split": "official public dev, distinct templates, variant 1 only; NOT private test",
+  "ordering": "sha256(task_id)",
+  "forecasts": "Frozen before execution; each worker runs at most 8 REPL turns",
+  "inference": "One adaptive stream: policy comparisons descriptive only; worker accuracy intervals resample task templates, not decodes",
+  "costs": "Model calls charged to routing; hosted verification and collection costs reported separately"
+}

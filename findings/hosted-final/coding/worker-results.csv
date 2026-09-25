@@ -1,0 +1,13 @@
+family,worker,tasks,accuracy,cost,incomplete
+all,openai_small,200,0.85,0.00031743,0
+all,anthropic_small,200,0.02,0.0022683524999999997,0
+all,openai_large,200,0.87,0.00150937,0
+all,anthropic_large,200,0.8575,0.002262825,1
+HumanEvalPlus,openai_small,80,0.9,0.000442235,0
+HumanEvalPlus,anthropic_small,80,0.04375,0.0025760625,0
+HumanEvalPlus,openai_large,80,0.9375,0.002068575,0
+HumanEvalPlus,anthropic_large,80,0.9125,0.0034039874999999995,0
+MbppPlus,openai_small,120,0.8166666666666667,0.0002342266666666667,0
+MbppPlus,anthropic_small,120,0.004166666666666667,0.0020632125,0
+MbppPlus,openai_large,120,0.825,0.0011365666666666668,0
+MbppPlus,anthropic_large,120,0.8208333333333333,0.00150205,1

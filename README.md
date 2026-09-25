@@ -4,12 +4,7 @@ Research code, findings and retained evidence for **CALM-S: Audited Forecast
 Settlement for Budgeted LLM-Agent Orchestration**. Owner: **ap-logics**.
 Handoff date: 24 September 2026. **The full study is not complete.**
 
-**Runtime update:** hosted Linux is now validated with the existing OpenAI API
-account. Both official EvalPlus positive/negative controls pass, and AppWorld
-fresh-instance and evaluator lifecycle checks pass. Coding collection is in
-progress. See [current remote execution instructions](REMOTE_EXECUTION.md).
-The September 23 release remains an immutable earlier snapshot; it does not
-yet contain the new hosted runs. Do not interpret its spend as today's total.
+**25 September update:** coding (80 development + 200 held-out) and AppWorld (8 + 19) are complete, including analyses and final evidence publication. Results do not demonstrate a CALM-S advantage. See [final results, spending and evidence](CURRENT_EXECUTION.md).
 
 ## Start here
 
@@ -72,29 +67,17 @@ source: the restore script deliberately restores only data and run artifacts.
 
 Copy `.env.example` to `.env` and supply keys privately **only when ready for
 paid collection**. No keys are included in this repository or release assets.
-Continue the existing ledger; the cumulative cap is **$99**, leaving **$82.9708498**
-at handoff. Coordinate a single spending owner: copies of the ledger on different
-machines cannot enforce a combined cap. Do not run paid work concurrently from
-separate clones. Return the updated ledger and traces with completed work.
+Continue the existing ledger. The shared ceiling is **$95**; final committed spending is **$44.8205364**, including an unresolved $0.10 reservation. Do not run paid work from independent ledger copies.
 
-## Run the prepared next stage
+## Restore the completed hosted studies
 
-After restoration, with Docker running:
+After the base archive, download the final increment and its receipt from the [final release](https://github.com/ap-logics/calm-s/releases/tag/hosted-evidence-20260925t034101z). Use a clean checkout:
 
 ```sh
-docker build -t calms-evalplus:20260923 calms_data/code-runtime
-python scripts_calms/run_code_benchmarks.py --check-only
-python scripts_calms/run_code_benchmarks.py --split dev --live --max-usd 99
-python scripts_calms/run_code_benchmarks.py --split test --live --max-usd 99
+python scripts_handoff/restore_hosted_increment.py downloads/CALM-S-hosted-increment-20260925T034101Z.zip --receipt downloads/receipt.json
 ```
 
-**Docker execution is not yet validated.** Both positive and negative controls
-must pass before spending. The runner enforces this. Development must finish
-before test starts. A full run entails 80 development + 200 test coding tasks,
-four workers, two responses each and three forecasters: up to 3,080 API calls.
-The budget ceiling can stop a partial run safely. Do not reset the ledger to
-force completion. The coding analysis and remaining experiment integrations
-still require work; see [HANDOFF.md](HANDOFF.md).
+The two hosted studies are finished; do not rerun paid collection to obtain their results. Analysis tables are browsable in [findings/hosted-final](findings/hosted-final). For further authorized paid work, stop other spending owners and use the restore tool's `--take-over-ledger` option to merge the final ledger without resetting reservations. The remaining research gaps are described in [CURRENT_EXECUTION.md](CURRENT_EXECUTION.md).
 
 ## Provenance and interpretation
 

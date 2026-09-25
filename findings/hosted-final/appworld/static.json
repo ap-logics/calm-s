@@ -1,0 +1,26 @@
+{
+  "static_probabilities": {
+    "AppWorld": [
+      0.0,
+      0.0,
+      0.0,
+      0.1875
+    ]
+  },
+  "training_clusters": [
+    "2a163ab",
+    "3c13f5a",
+    "60d0b5b",
+    "692c77d",
+    "82e2fac",
+    "b0a8eae",
+    "ce359b5",
+    "d0b1f43"
+  ],
+  "worker_ids": [
+    "openai_small",
+    "anthropic_small",
+    "openai_large",
+    "anthropic_large"
+  ]
+}

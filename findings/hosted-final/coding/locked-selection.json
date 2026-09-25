@@ -1,0 +1,6 @@
+{
+  "rate": 0.005,
+  "comparator": "static",
+  "development_sha256": "068791c5d463a62445b074edf77f89d18b0e4598f43d30b633dfc359da566e04",
+  "protocol_sha256": "dbe9e7d8f64f70c362658306ae9656ca3c007e13cf332e139c625a3d7ba20a95"
+}

@@ -27,7 +27,8 @@ def metrics(rows):
             'budget_violations':sum(r['cost']>r['budget']+1e-9 for r in rows)}
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--live',action='store_true');args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--live',action='store_true')
+    parser.add_argument('--session-suffix',default='');args=parser.parse_args()
     if not args.live: raise SystemExit('Requires --live for held-out model execution')
     report=OUT/'analysis'
     path=report/'prospective-protocol.json'
@@ -49,7 +50,7 @@ def main():
     else: write_json(report/'locked-selection.json',lock)
     write_csv(report/'development-selection.csv',tuning)
     with (OUT/'held-out-collection.log').open('ab') as log:
-        subprocess.run([sys.executable,str(ROOT/'scripts_calms/run_hosted_appworld.py'),'--live','--split','test'],
+        subprocess.run([sys.executable,str(ROOT/'scripts_calms/run_hosted_appworld.py'),'--live','--split','test','--session-suffix='+args.session_suffix],
                        cwd=ROOT,stdout=log,stderr=log,check=True)
     test=sorted(jsonl(OUT/'test/matrix.jsonl'),key=lambda r:digest(r['task_id']))
     validate_calibration(test,calibration)

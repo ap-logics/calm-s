@@ -1,0 +1,9 @@
+arm,reference,paired_units,difference,ci95_low,ci95_high
+calms|r=0.005|pool=exponential,equal|r=0|pool=exponential,10,-3.039799999999815e-05,-5.280199999999347e-05,-9.61799999999735e-06
+cheapest|r=0|pool=exponential,equal|r=0|pool=exponential,10,0.006699351000000001,0.0017380949999999784,0.01142714300000001
+coupled|r=0|pool=exponential,equal|r=0|pool=exponential,10,0.0,0.0,0.0
+explore|r=0|pool=exponential,equal|r=0|pool=exponential,10,0.0051030789999999965,0.0009852949999999833,0.009105005999999995
+myopic|r=0.005|pool=exponential,equal|r=0|pool=exponential,10,-3.039799999999815e-05,-5.280199999999347e-05,-9.61799999999735e-06
+premium|r=0|pool=exponential,equal|r=0|pool=exponential,10,0.0021819069999999886,0.002155582999999983,0.002208998999999992
+selected|r=0|pool=exponential,equal|r=0|pool=exponential,10,0.0,0.0,0.0
+static|r=0|pool=exponential,equal|r=0|pool=exponential,10,0.004283340999999996,-0.0008526460000000014,0.00925873599999999

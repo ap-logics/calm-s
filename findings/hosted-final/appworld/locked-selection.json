@@ -1,0 +1,11 @@
+{
+  "rate": 0.005,
+  "decision_costs": [
+    0.00384875,
+    0.0150900625,
+    0.007319,
+    0.06340525
+  ],
+  "development_sha256": "ed879b3ebf877cb7dc9140d88bce33f08c8edc71ec5763c195004e10a4a6dcbe",
+  "protocol_sha256": "a938456cf5a5a9796ab2bca73b0e1b183814079139dc5dcf0076885201329cd8"
+}

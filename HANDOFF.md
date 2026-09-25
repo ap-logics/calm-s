@@ -1,6 +1,10 @@
+# Current handoff — 25 September 2026
+
+Coding and task-level AppWorld are complete. See [final findings and evidence](CURRENT_EXECUTION.md). No collector is running. One uncertain $0.10 infrastructure reservation remains preserved. The following planning notes describe the earlier handoff and are superseded for completion, spending and runtime status.
+
 # Handoff: remaining work
 
-**No experiment is running at handoff. No model API request is pending.**
+**Historical status at the earlier handoff:** no experiment was running then.
 The original PC has disabled firmware virtualization. Another Linux/Docker host
 can perform the coding stage without changing that PC. Keys must be supplied
 privately, and one collaborator must own the shared remaining budget.

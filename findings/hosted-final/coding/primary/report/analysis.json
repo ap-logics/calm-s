@@ -1,0 +1,5 @@
+{
+  "unit": "seed",
+  "resamples": 5000,
+  "note": "Percentile paired cluster bootstrap; no equivalence claim; one-unit CI is unavailable. Use seed for independent synthetic streams. Reused cached tasks are not new independent seeds. Use task clusters for frozen-matrix replay. Adaptive real streams need independent stream replication."
+}
